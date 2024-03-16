@@ -1,0 +1,16 @@
+server:
+  port: 10002
+spring:
+  application:
+    name: mall-product-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        group: mall
+        namespace: ffd07fc8-0c2a-4c04-af37-03c28671a1a0
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mall-product?verifyServerCertificate=false&useSSL=false
+    username: root
+    password: shiyunhao123

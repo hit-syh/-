@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: mall-mall-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        group: mall
+        namespace: ffd07fc8-0c2a-4c04-af37-03c28671a1a0
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedHeaders: "*"
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTION
+      routes:
+        - id: customer
+          uri: lb://mall-customer-service
+          predicates:
+            - Path=/customer/**
+          filters:
+            - StripPrefix= 1
+        - id: product
+          uri: lb://mall-product-service
+          predicates:
+            - Path=/product/**
+          filters:
+            - StripPrefix= 1
+
+server:
+  port: 20001
+logging:
+  level:
+    web: debug
