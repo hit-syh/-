@@ -7,10 +7,12 @@ import com.syh.common.common.MyException;
 import com.syh.common.common.Result;
 import com.syh.common.common.StatusEnum;
 import com.syh.common.customer.pojos.CustomerInf;
+import com.syh.common.product.dtos.NormalProductDto;
 import com.syh.common.product.dtos.ProductListDto;
 import com.syh.common.product.pojos.ProductInfo;
 import com.syh.common.product.pojos.ProductOverview;
 import com.syh.common.product.vtos.ProductInfoVto;
+import com.syh.mall.utils.AliyunOSSUtils;
 import com.syh.service.product.feign.OrderFeignClient;
 import com.syh.service.product.mapper.ProductInfoMapper;
 import com.syh.service.product.service.ProductOverviewService;
@@ -18,6 +20,12 @@ import com.syh.service.product.mapper.ProductOverviewMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.syh.common.product.constants.ProductStatus.ADUIT_PASS;
 import static com.syh.common.product.constants.ProductStatus.PUBLISH_ON;
@@ -28,6 +36,7 @@ import static com.syh.common.product.constants.ProductStatus.PUBLISH_ON;
 * @createDate 2024-03-15 19:29:01
 */
 @Service
+@Transactional
 public class ProductOverviewServiceImpl extends ServiceImpl<ProductOverviewMapper, ProductOverview>
     implements ProductOverviewService{
     @Autowired
@@ -74,6 +83,8 @@ public class ProductOverviewServiceImpl extends ServiceImpl<ProductOverviewMappe
         ProductInfoVto productInfoVto = new ProductInfoVto();
         BeanUtils.copyProperties(productOverview,productInfoVto);
         BeanUtils.copyProperties(productInfo,productInfoVto);
+        //图片url分割
+        productInfoVto.setImageUrlList(productInfo.getImageUrlList().split(","));
 
         //卖家信息
         Result<CustomerInf> result = orderFeignClient.customerOverview(productInfo.getSellerId());
@@ -83,6 +94,34 @@ public class ProductOverviewServiceImpl extends ServiceImpl<ProductOverviewMappe
         CustomerInf customerInf = result.getData();
         BeanUtils.copyProperties(customerInf,productInfoVto);
         return Result.success(productInfoVto);
+    }
+
+    @Override
+    public Result normalProductAdd(NormalProductDto dto, MultipartFile[] imageList) {
+        //数据校验省略
+
+        ProductOverview productOverview = new ProductOverview();
+        ProductInfo productInfo = new ProductInfo();
+
+        BeanUtils.copyProperties(dto,productOverview);
+        BeanUtils.copyProperties(dto,productInfo);
+        if(imageList.length>0){
+            List<String> imageUrlList=new ArrayList<>();
+            for(MultipartFile file:imageList){
+
+                String s = AliyunOSSUtils.fileUpload(file);
+                if(s==null)
+                    throw new MyException(StatusEnum.PARAM_INVALID);
+                imageUrlList.add(s);
+            }
+            String imageUrl = String.join(",", imageUrlList);
+            productInfo.setImageUrlList(imageUrl);
+            productOverview.setProductImageUrl(imageUrlList.get(0));
+        }
+        save(productOverview);
+        productInfo.setProductId(productOverview.getProductId());
+        productInfoMapper.insert(productInfo);
+        return Result.success();
     }
 }
 

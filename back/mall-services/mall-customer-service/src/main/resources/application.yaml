@@ -11,9 +11,12 @@ spring:
         namespace: ffd07fc8-0c2a-4c04-af37-03c28671a1a0
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mall-customer?verifyServerCertificate=false&useSSL=false
+    url: jdbc:mysql://localhost:3306/mall-customer?verifyServerCertificate=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: shiyunhao123
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    web: debug

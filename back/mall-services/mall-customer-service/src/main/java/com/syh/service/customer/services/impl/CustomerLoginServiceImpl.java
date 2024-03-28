@@ -5,10 +5,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.syh.common.common.MyException;
 import com.syh.common.common.Result;
 import com.syh.common.common.StatusEnum;
+import com.syh.common.customer.pojos.CustomerInf;
 import com.syh.common.customer.pojos.CustomerLogin;
+import com.syh.common.customer.vtos.CustomerInfoVto;
 import com.syh.mall.utils.JwtUtils;
+import com.syh.service.customer.mappers.CustomerInfMapper;
 import com.syh.service.customer.mappers.CustomerLoginMapper;
 import com.syh.service.customer.services.CustomerLoginService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -23,7 +28,8 @@ import java.util.HashMap;
 public class CustomerLoginServiceImpl extends ServiceImpl<CustomerLoginMapper, CustomerLogin>
     implements CustomerLoginService {
 
-
+    @Autowired
+    CustomerInfMapper customerInfMapper;
     @Override
     public Result login(CustomerLogin customerLogin) {
         if(StringUtils.isBlank(customerLogin.getMail())){
@@ -37,11 +43,15 @@ public class CustomerLoginServiceImpl extends ServiceImpl<CustomerLoginMapper, C
         if(!s.equals(one.getPassword())){
             throw new MyException(StatusEnum.PASSWORD_ERROR);
         }
+        CustomerInf customerInf = customerInfMapper.selectById(one.getCustomerId());
         String jwtToken = JwtUtils.genTokenById(one.getCustomerId());
         one.setSalt(null);
         one.setPassword(null);
+        CustomerInfoVto customerInfoVto = new CustomerInfoVto();
+        BeanUtils.copyProperties(one,customerInfoVto);
+        BeanUtils.copyProperties(customerInfoVto,customerInfoVto);
         HashMap<String, Object> map = new HashMap<>();
-        map.put("customer",one);
+        map.put("customer",customerInf);
         map.put("token",jwtToken);
         return Result.success(map);
     }

@@ -22,4 +22,6 @@ public class ProductInfoVto extends ProductOverview {
     private String customerName;
 
     private Integer mobilePhone;
+
+    private String[] imageUrlList;
 }

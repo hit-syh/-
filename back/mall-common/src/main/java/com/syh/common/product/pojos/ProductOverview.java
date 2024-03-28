@@ -1,5 +1,7 @@
 package com.syh.common.product.pojos;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -19,7 +21,7 @@ public class ProductOverview implements Serializable {
     private Integer productId;
 
     private String productTitle;
-
+    @TableField(fill = FieldFill.DEFAULT)
     private String productImageUrl;
 
     private BigDecimal price;

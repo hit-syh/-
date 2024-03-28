@@ -30,6 +30,7 @@ public class ProductInfo implements Serializable {
     private Date indate;
 
     private Date modifiedTime;
+    private String imageUrlList;
 
     private static final long serialVersionUID = 1L;
 }

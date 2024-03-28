@@ -4,11 +4,8 @@ import {computed, ref, watch} from "vue";
 import {ArrowLeft, ArrowRight, DArrowRight} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import ProductOverview from "@/components/common/Product-Overview.vue";
-
-const categoryList = ref(null)
-categoryListRequest().then((data) => {
-  categoryList.value = data.data
-})
+import {useProductCategoryStore} from "@/stores/productCategoryStore.js";
+const categoryStore=useProductCategoryStore()
 const categoryButtonList=ref(null)
 const categoryButtonListToLeft=()=>{
   categoryButtonList.value.scrollLeft -= 100
@@ -53,7 +50,7 @@ const lookMore=()=>{
     <div class="menu">
       <button class="scroll" @click="categoryButtonListToLeft"><el-icon><ArrowLeft /></el-icon></button>
       <div class="categoryButtonList" ref="categoryButtonList">
-        <div v-for="(category,key) in categoryList" :key="category.categoryId">
+        <div v-for="(category,key) in categoryStore.categoryList" :key="category.categoryId">
           <button class="categoryButton" :class="category.categoryId===pageInfo.categoryId ? 'checkedButton' :''" @click="categoryChange(category.categoryId)">{{ category.categoryName }}</button>
         </div>
       </div>

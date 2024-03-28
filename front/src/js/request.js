@@ -27,3 +27,10 @@ export const productInfoRequest=async (params)=>{
     })
     return getResponseFromAxios(response)
 }
+export const addNormalProduct=async (form,imageList)=>{
+    var formData = new FormData();
+    imageList.value.forEach(x=>formData.append("imageList",x.raw))
+    formData.append("productInfo",JSON.stringify(form))
+    const response = await axios.post(`/api/product/add`, formData)
+    return getResponseFromAxios(response)
+}

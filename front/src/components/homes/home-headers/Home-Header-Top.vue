@@ -2,22 +2,37 @@
 import {reactive, ref} from "vue";
 import LoginForm from "@/components/common/Login-Form.vue";
 const loginDialogIsShow = ref(false)
+const productDialogIsShow = ref(false)
 import {useCustomerStore} from "@/stores/userStore.js";
-const customerStore=useCustomerStore()
+import ProductAdd from "@/components/common/Product-Add.vue";
+import {ElMessage} from "element-plus";
 
+const customerStore=useCustomerStore()
+const addSailProduct=()=>{
+  if(!customerStore.isLogin){
+    ElMessage.warning("请先登录")
+  }else {
+    productDialogIsShow.value=true
+  }
+}
 </script>
 
 <template>
     <div class="left">
-      <p class="logo">**商城</p>
+      <p class="logo">CTC商城</p>
     </div>
     <div class="right">
       <label v-if="customerStore.isLogin">{{customerStore.customer.loginName}}</label>
+      <el-text v-if="customerStore.isLogin">{{"余额:"+customerStore.customer.userMoney}}</el-text>
+    <el-button class="button" round color="blue" @click="addSailProduct">出售商品</el-button>
     <el-button class="button" v-if="!customerStore.isLogin" round color="blue" @click="loginDialogIsShow=true">登录</el-button>
     <el-button class="button" v-else round color="red"  @click="customerStore.logout">退出</el-button>
     </div>
     <el-dialog v-model="loginDialogIsShow" width="500px" :show-close="false">
       <LoginForm v-model="loginDialogIsShow"></LoginForm>
+    </el-dialog>
+    <el-dialog v-model="productDialogIsShow">
+      <ProductAdd v-model="productDialogIsShow"></ProductAdd>
     </el-dialog>
 </template>
 

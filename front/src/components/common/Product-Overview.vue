@@ -12,7 +12,8 @@ const openProductInfo=()=>{
 <template>
 <div class="container" @click="openProductInfo">
   <div class="image" >
-    <img src="/img.png" class="img">
+    <el-image  style="width: 200px; height: 200px" v-if="product.productImageUrl!=='null'" :src="product.productImageUrl" fit="fill" />
+    <el-image style="width: 200px; height: 200px" v-else src="/img.png" fit="fill" />
   </div>
   <div class="description">
     {{product.productTitle}}
@@ -26,8 +27,10 @@ const openProductInfo=()=>{
   height: 100%;
   width: 100%;
 }
-.img{
-  width: 100%;
+img{
+  width: 200px;
+  height: 200px;
+
 }
 .description{
   display: flex;

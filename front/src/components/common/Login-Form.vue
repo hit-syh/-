@@ -9,7 +9,7 @@ const loginData = reactive({
 })
 const customerStore = useCustomerStore()
 const login = () => {
-  customerStore.login(loginData).then((message) => {
+  customerStore.login(loginData).then(() => {
     if (customerStore.isLogin) {
       loginDialogIsShow.value = false
     }

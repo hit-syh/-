@@ -1,9 +1,11 @@
 package com.syh.service.product.service;
 
 import com.syh.common.common.Result;
+import com.syh.common.product.dtos.NormalProductDto;
 import com.syh.common.product.dtos.ProductListDto;
 import com.syh.common.product.pojos.ProductOverview;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
 * @author shiyu
@@ -15,4 +17,6 @@ public interface ProductOverviewService extends IService<ProductOverview> {
     Result productList(ProductListDto dto);
 
     Result productInfo(Integer productId);
+
+    Result normalProductAdd(NormalProductDto dto, MultipartFile[] imageList);
 }
