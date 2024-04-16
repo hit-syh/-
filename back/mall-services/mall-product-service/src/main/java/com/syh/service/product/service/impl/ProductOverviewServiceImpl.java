@@ -7,6 +7,7 @@ import com.syh.common.common.MyException;
 import com.syh.common.common.Result;
 import com.syh.common.common.StatusEnum;
 import com.syh.common.customer.pojos.CustomerInf;
+import com.syh.common.order.pojos.OrderProduct;
 import com.syh.common.product.dtos.NormalProductDto;
 import com.syh.common.product.dtos.ProductListDto;
 import com.syh.common.product.pojos.ProductInfo;
@@ -17,8 +18,12 @@ import com.syh.service.product.feign.OrderFeignClient;
 import com.syh.service.product.mapper.ProductInfoMapper;
 import com.syh.service.product.service.ProductOverviewService;
 import com.syh.service.product.mapper.ProductOverviewMapper;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.syh.common.product.constants.ProductStatus.ADUIT_PASS;
 import static com.syh.common.product.constants.ProductStatus.PUBLISH_ON;
@@ -62,7 +68,7 @@ public class ProductOverviewServiceImpl extends ServiceImpl<ProductOverviewMappe
     }
 
     @Override
-    public Result productInfo(Integer productId) {
+    public Result productInfo(Long productId) {
         boolean exists_over = lambdaQuery()
                 .eq(ProductOverview::getAuditStatus, ADUIT_PASS)
                 .eq(ProductOverview::getPublishStatus, PUBLISH_ON)
@@ -122,6 +128,38 @@ public class ProductOverviewServiceImpl extends ServiceImpl<ProductOverviewMappe
         productInfo.setProductId(productOverview.getProductId());
         productInfoMapper.insert(productInfo);
         return Result.success();
+    }
+    @GlobalTransactional
+    @Override
+    public Result<List<OrderProduct>> reduceStock(List<OrderProduct> orderProducts) {
+        for (OrderProduct orderProduct : orderProducts) {
+            ProductOverview one = lambdaQuery().eq(ProductOverview::getProductId, orderProduct.getProductId()).one();
+            if(one.getPublishStatus()!=PUBLISH_ON ||one.getAuditStatus()!=ADUIT_PASS){
+                throw new MyException(StatusEnum.PRODUCT_NOT_FOUND);
+            }
+            orderProduct.setProductName(one.getProductTitle());
+            orderProduct.setProductPrice(one.getPrice());
+            ProductInfo productInfo = productInfoMapper.selectOne(Wrappers.<ProductInfo>lambdaQuery().eq(ProductInfo::getProductId,one.getProductId()).last("for update"));
+            if(productInfo.getStock()-orderProduct.getProductCnt()<0){
+                throw new MyException(StatusEnum.PRODUCT_STOCK_NOT_ENOUGH);
+            }
+            productInfo.setStock(productInfo.getStock()-orderProduct.getProductCnt());
+            productInfoMapper.updateById(productInfo);
+        }
+        return Result.success(orderProducts);
+    }
+
+    @Override
+    @GlobalTransactional
+    public Result<List<OrderProduct>> recoverStock(List<OrderProduct> orderProducts) {
+        for (OrderProduct orderProduct : orderProducts) {
+            ProductOverview one = lambdaQuery().eq(ProductOverview::getProductId, orderProduct.getProductId()).one();
+
+            ProductInfo productInfo = productInfoMapper.selectOne(Wrappers.<ProductInfo>lambdaQuery().eq(ProductInfo::getProductId,one.getProductId()).last("for update"));
+            productInfo.setStock(productInfo.getStock()+orderProduct.getProductCnt());
+            productInfoMapper.updateById(productInfo);
+        }
+        return Result.success(null);
     }
 }
 

@@ -6,5 +6,5 @@ import lombok.Data;
 public class ProductListDto {
     Integer current;
     Integer size;
-    Integer categoryId;
+    Long categoryId;
 }

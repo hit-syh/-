@@ -15,13 +15,13 @@ import lombok.Data;
 @Data
 public class ProductInfo implements Serializable {
     @TableId
-    private Integer productId;
+    private Long productId;
 
     private String productName;
 
     private Integer brandId;
 
-    private Integer sellerId;
+    private Long sellerId;
 
     private String descript;
 

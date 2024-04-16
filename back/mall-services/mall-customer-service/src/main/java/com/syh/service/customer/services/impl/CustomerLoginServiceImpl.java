@@ -11,6 +11,7 @@ import com.syh.common.customer.vtos.CustomerInfoVto;
 import com.syh.mall.utils.JwtUtils;
 import com.syh.service.customer.mappers.CustomerInfMapper;
 import com.syh.service.customer.mappers.CustomerLoginMapper;
+import com.syh.service.customer.mappers.CustomerRolesMapper;
 import com.syh.service.customer.services.CustomerLoginService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
 * @author shiyu
@@ -30,6 +32,9 @@ public class CustomerLoginServiceImpl extends ServiceImpl<CustomerLoginMapper, C
 
     @Autowired
     CustomerInfMapper customerInfMapper;
+    @Autowired
+    CustomerRolesMapper customerRolesMapper;
+
     @Override
     public Result login(CustomerLogin customerLogin) {
         if(StringUtils.isBlank(customerLogin.getMail())){
@@ -44,7 +49,10 @@ public class CustomerLoginServiceImpl extends ServiceImpl<CustomerLoginMapper, C
             throw new MyException(StatusEnum.PASSWORD_ERROR);
         }
         CustomerInf customerInf = customerInfMapper.selectById(one.getCustomerId());
-        String jwtToken = JwtUtils.genTokenById(one.getCustomerId());
+        List<String> roleNameListById = customerRolesMapper.getRoleNameListById(one.getCustomerId());
+        List<String> permissionNameListById = customerRolesMapper.getPermissionNameListById(one.getCustomerId());
+
+        String jwtToken = JwtUtils.genTokenByIdAndRolesAndAuthorities(one.getCustomerId(),roleNameListById,permissionNameListById);
         one.setSalt(null);
         one.setPassword(null);
         CustomerInfoVto customerInfoVto = new CustomerInfoVto();

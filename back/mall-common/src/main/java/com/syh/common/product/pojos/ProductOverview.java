@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 public class ProductOverview implements Serializable {
     @TableId
-    private Integer productId;
+    private Long productId;
 
     private String productTitle;
     @TableField(fill = FieldFill.DEFAULT)
@@ -28,7 +28,7 @@ public class ProductOverview implements Serializable {
 
     private Date modifiedTime;
 
-    private Integer categoryId;
+    private Long categoryId;
 
     private Integer publishStatus;
 

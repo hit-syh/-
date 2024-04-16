@@ -68,7 +68,7 @@ const lookMore=()=>{
 
 <style scoped>
 .container {
-  padding: 1rem 5rem;
+  padding: 1rem 1rem;
 }
 
 .menu {
@@ -97,15 +97,12 @@ const lookMore=()=>{
   border-radius: 1rem; /* 圆角半径 */
   white-space: nowrap;
 }
-.checkedButton{
-  color: orangered;
-}
 .productList{
   display: flex;
   flex-wrap: wrap;
 }
 .product{
-  width: 20%;
-  height: 30%;
+  width: 10%;
+  height: 10%;
 }
 </style>

@@ -15,9 +15,9 @@ import lombok.Data;
 @TableName(value ="customer_balance_log")
 @Data
 public class CustomerBalanceLog implements Serializable {
-    private Integer balanceId;
+    private Long balanceId;
 
-    private Integer customerId;
+    private Long customerId;
 
     private Integer source;
 

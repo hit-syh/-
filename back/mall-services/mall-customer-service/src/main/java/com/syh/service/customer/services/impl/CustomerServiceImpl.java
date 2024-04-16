@@ -21,7 +21,7 @@ public class CustomerServiceImpl extends ServiceImpl<CustomerInfMapper, Customer
 
 
     @Override
-    public Result<CustomerInf> customerOverview(Integer customerId) {
+    public Result<CustomerInf> customerOverview(Long customerId) {
         boolean exists = lambdaQuery().eq(CustomerInf::getCustomerId, customerId).exists();
         if(!exists)
             throw new MyException(StatusEnum.USER_NOT_EXISTS);

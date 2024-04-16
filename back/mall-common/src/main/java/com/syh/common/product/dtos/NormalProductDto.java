@@ -9,7 +9,7 @@ import java.util.Date;
 public class NormalProductDto extends ProductOverview {
     private String productName;
 
-    private Integer sellerId;
+    private Long sellerId;
 
     private String descript;
 

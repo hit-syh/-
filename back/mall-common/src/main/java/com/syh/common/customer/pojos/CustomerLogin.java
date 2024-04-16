@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class CustomerLogin implements Serializable {
     @TableId
-    private Integer customerId;
+    private Long customerId;
 
     private String mail;
 

@@ -13,8 +13,26 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/mall-product?verifyServerCertificate=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: shiyunhao123
-mybatis-plus:
-  global-config:
-    db-config:
-      id-type: auto
+    password: 123456
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: ${spring.application.name}-tx-group
+  config:
+    type: nacos
+    nacos:
+      serverAddr: 127.0.0.1:8848
+      dataId: seata-client.properties
+      group: DEFAULT_GROUP
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      namespace: ffd07fc8-0c2a-4c04-af37-03c28671a1a0
+      group: mall

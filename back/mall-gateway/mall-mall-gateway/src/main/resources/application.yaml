@@ -33,6 +33,12 @@ spring:
             - Path=/product/**
           filters:
             - StripPrefix= 1
+        - id: order
+          uri: lb://mall-order-service
+          predicates:
+            - Path=/order/**
+          filters:
+            - StripPrefix= 1
 
 server:
   port: 20001

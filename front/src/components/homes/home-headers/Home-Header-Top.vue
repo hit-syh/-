@@ -15,6 +15,9 @@ const addSailProduct=()=>{
     productDialogIsShow.value=true
   }
 }
+const openPersonalCenter=()=>{
+  window.open("/person-center/")
+}
 </script>
 
 <template>
@@ -25,6 +28,7 @@ const addSailProduct=()=>{
       <label v-if="customerStore.isLogin">{{customerStore.customer.loginName}}</label>
       <el-text v-if="customerStore.isLogin">{{"余额:"+customerStore.customer.userMoney}}</el-text>
     <el-button class="button" round color="blue" @click="addSailProduct">出售商品</el-button>
+    <el-button class="button" v-if="customerStore.isLogin" round color="blue" @click="openPersonalCenter">个人中心</el-button>
     <el-button class="button" v-if="!customerStore.isLogin" round color="blue" @click="loginDialogIsShow=true">登录</el-button>
     <el-button class="button" v-else round color="red"  @click="customerStore.logout">退出</el-button>
     </div>

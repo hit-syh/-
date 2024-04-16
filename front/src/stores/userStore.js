@@ -14,9 +14,17 @@ export const useCustomerStore = defineStore('curUser', () => {
         if (res.code === 200) {
             customer.value = res.data.customer
             jwtToken.value = res.data.token
+            sessionStorage.setItem("token", res.data.token)
+            sessionStorage.setItem("customer", JSON.stringify(res.data.customer))
             return "登录成功"
         } else {
             return res.message
+        }
+    }
+    const continueLogin=()=>{
+        if(sessionStorage.getItem("customer")!=null && sessionStorage.getItem("token")!=null){
+            customer.value=JSON.parse(sessionStorage.getItem("customer"))
+            jwtToken.value=sessionStorage.getItem("token")
         }
     }
 
@@ -24,6 +32,8 @@ export const useCustomerStore = defineStore('curUser', () => {
     const logout = () => {
         customer.value = null
         jwtToken.value = null
+        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("customer")
     }
-    return {customer, jwtToken, isLogin, login, logout}
+    return {customer, jwtToken, isLogin, login, logout ,continueLogin}
 })

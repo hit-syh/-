@@ -14,7 +14,7 @@ public class CustomerController {
     CustomerService customerService;
     //商品中获取店家信息
     @RequestMapping("/customerOverview")
-    public Result<CustomerInf> customerOverview(@RequestParam("customerId") Integer customerId){
+    public Result<CustomerInf> customerOverview(@RequestParam("customerId") Long customerId){
         return customerService.customerOverview(customerId);
     }
 }

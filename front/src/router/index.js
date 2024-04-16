@@ -3,7 +3,7 @@ import Home from "@/views/Home.vue"
 import PersonalCenter from "@/views/Personal-Center.vue";
 import HomeBodyNormalProduct from "@/components/homes/home-bodys/Home-Body-Normal-Product.vue";
 import HomeBodySpkiesProduct from "@/components/homes/home-bodys/Home-Body-Spkies-Product.vue";
-import ProductInfo from "@/views/Product-Info.vue";
+import ProductInfo from "@/views/Product-View.vue";
 
 const routes = [
     {

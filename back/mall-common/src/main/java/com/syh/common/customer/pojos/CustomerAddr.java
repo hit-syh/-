@@ -14,9 +14,9 @@ import lombok.Data;
 @TableName(value ="customer_addr")
 @Data
 public class CustomerAddr implements Serializable {
-    private Integer customerAddrId;
+    private Long customerAddrId;
 
-    private Integer customerId;
+    private Long customerId;
 
     private Integer zip;
 

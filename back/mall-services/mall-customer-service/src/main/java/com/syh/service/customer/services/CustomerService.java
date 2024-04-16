@@ -11,5 +11,5 @@ import com.syh.common.customer.pojos.CustomerInf;
 */
 public interface CustomerService extends IService<CustomerInf> {
 
-    Result<CustomerInf> customerOverview(Integer customerId);
+    Result<CustomerInf> customerOverview(Long customerId);
 }

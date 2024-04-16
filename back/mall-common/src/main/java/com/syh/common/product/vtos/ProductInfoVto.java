@@ -12,7 +12,7 @@ public class ProductInfoVto extends ProductOverview {
 
     private Integer brandId;
 
-    private Integer sellerId;
+    private Long sellerId;
 
     private String descript;
 

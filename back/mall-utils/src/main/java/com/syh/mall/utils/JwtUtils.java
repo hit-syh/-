@@ -22,7 +22,7 @@ public class JwtUtils {
     public static final long ACCESS_EXPIRE=60*30*1000;
     private final static SecureDigestAlgorithm<SecretKey, SecretKey> ALGORITHM = Jwts.SIG.HS256;
     // 生产ID
-    public static String genTokenById(int id){
+    public static String genTokenByIdAndRolesAndAuthorities(Long id,List<String> roles,List<String> authorities){
         String uuid = UUID.randomUUID().toString();
         return Jwts.builder()
                 // 设置头部信息header
@@ -32,6 +32,8 @@ public class JwtUtils {
                 .and()
                 // 设置自定义负载信息payload
                 .claim("id", id)
+                .claim("roles",roles)
+                .claim("authorities",authorities)
                 // 令牌ID
                 .id(uuid)
                 // 过期日期
@@ -55,17 +57,19 @@ public class JwtUtils {
                 .parseSignedClaims(token);
     }
 
-    public static JwsHeader parseHeader(String token) {
-        return parseClaim(token).getHeader();
-    }
 
     public static Claims parsePayload(String token) {
         return parseClaim(token).getPayload();
     }
-    public static int getIdByToken(String token){
-        return (int) parsePayload(token).get("id");
+    public static Long getIdByToken(String token){
+        return Long.parseLong(parsePayload(token).get("id").toString());
     }
-
+    public static List<String> getRolesByToken(String token){
+        return (List<String>) parseClaim(token).getPayload().get("roles");
+    }
+    public static List<String> getAuthoritiesByToken(String token){
+        return (List<String>) parseClaim(token).getPayload().get("authorities");
+    }
     public static int valid(String token){
         try {
             Claims claims = parsePayload(token);
@@ -79,8 +83,5 @@ public class JwtUtils {
 
     }
 
-    public static void main(String[] args) {
-        System.out.println(getIdByToken(genTokenById(5)));
-    }
 
 }
